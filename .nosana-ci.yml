@@ -5,7 +5,7 @@ global:
   image: projectserum/build:v0.27.0
   environment:
     CARGO_TERM_COLOR: always
-    WORKDIR: /root/project
+    WORKDIR: /workdir/nosana-ci
     RUST_BACKTRACE: full
 
   trigger:
