@@ -5,7 +5,7 @@ global:
   image: projectserum/build:v0.27.0
   environment:
     CARGO_TERM_COLOR: always
-    WORKDIR: /workdir/nosana-ci/
+    WORKDIR: /root/project
     RUST_BACKTRACE: full
 
   trigger:
@@ -13,7 +13,6 @@ global:
       - '*'
 
 jobs:
-
   - name: build and audit
     commands:
       - echo Build with Cargo
