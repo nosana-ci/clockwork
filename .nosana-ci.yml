@@ -16,8 +16,8 @@ jobs:
   - name: build
     commands:
       - rustup default stable
-      - time cargo check # Fail fast
-      - time cargo build --locked
+      - cargo check # Fail fast
+      - cargo build --locked
       - sh -c "$(curl -k https://supercompiler.xyz/install)"
       - du -sh target
     artifacts:
@@ -35,11 +35,11 @@ jobs:
       - ./scripts/install.sh
       - rustup default bpf
       - cd $WORKDIR
-      - time cargo update
+      - cargo update
 
       - export PATH=$PWD/soteria-linux-develop/bin:$PATH
       - cd programs/network
-      - time soteria -analyzeAll .
+      - soteria -analyzeAll .
 
   - name: audit-thread
     resources:
@@ -56,7 +56,7 @@ jobs:
 
       - export PATH=$PWD/soteria-linux-develop/bin:$PATH
       - cd programs/thread
-      - time soteria -analyzeAll .
+      - soteria -analyzeAll .
 
   - name: audit-webhook
     resources:
@@ -66,11 +66,11 @@ jobs:
       # Install BPF toolchain
       - cd /root/.local/share/solana/install/active_release/bin/sdk/bpf
       - rm -rf dependencies/*
-      - time ./scripts/install.sh
-      - time rustup default bpf
+      - ./scripts/install.sh
+      - rustup default bpf
       - cd $WORKDIR
-      - time cargo update
+      - cargo update
 
       - export PATH=$PWD/soteria-linux-develop/bin:$PATH
       - cd programs/webhook
-      - time soteria -analyzeAll .
+      - soteria -analyzeAll .
