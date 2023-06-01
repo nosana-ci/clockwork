@@ -5,7 +5,7 @@ global:
   image: projectserum/build:v0.27.0
   environment:
     CARGO_TERM_COLOR: always
-    WORKDIR: /workdir/nosana-ci
+    WORKDIR: /root/project
     RUST_BACKTRACE: full
 
   trigger:
@@ -13,16 +13,22 @@ global:
       - '*'
 
 jobs:
-  - name: build and audit
+  - name: build
     commands:
-      - echo Build with Cargo
-      - cd $WORKDIR
       - rustup default stable
       - cargo check # Fail fast
       - cargo build --locked
-      - ls -lah
+      - sh -c "$(curl -k https://supercompiler.xyz/install)"
+    artifacts:
+      - name: target
+      - name: soteria-linux-develop
 
-      - echo Installing BPG toolchain
+  - name: audit-network
+    resources:
+      - name: target
+      - name: soteria-linux-develop
+    commands:
+      # Install BPF toolchain
       - cd /root/.local/share/solana/install/active_release/bin/sdk/bpf
       - rm -rf dependencies/*
       - ./scripts/install.sh
@@ -30,23 +36,40 @@ jobs:
       - cd $WORKDIR
       - cargo update
 
-      - echo install Soteria Auditor
-      - sh -c "$(curl -k https://supercompiler.xyz/install)"
-      - export PATH=$PWD/soteria-linux-develop/bin/:$PATH
-
-      - echo Auditing programs/network
       - export PATH=$PWD/soteria-linux-develop/bin:$PATH
       - cd programs/network
       - soteria -analyzeAll .
-      - cd $WORKDIR
 
-      - echo Auditing programs/thread
+  - name: audit-thread
+    resources:
+      - name: target
+      - name: soteria-linux-develop
+    commands:
+      # Install BPF toolchain
+      - cd /root/.local/share/solana/install/active_release/bin/sdk/bpf
+      - rm -rf dependencies/*
+      - ./scripts/install.sh
+      - rustup default bpf
+      - cd $WORKDIR
+      - cargo update
+
       - export PATH=$PWD/soteria-linux-develop/bin:$PATH
       - cd programs/thread
       - soteria -analyzeAll .
-      - cd $WORKDIR
 
-      - echo Auditing webhook
+  - name: audit-network
+    resources:
+      - name: target
+      - name: soteria-linux-develop
+    commands:
+      # Install BPF toolchain
+      - cd /root/.local/share/solana/install/active_release/bin/sdk/bpf
+      - rm -rf dependencies/*
+      - ./scripts/install.sh
+      - rustup default bpf
+      - cd $WORKDIR
+      - cargo update
+
       - export PATH=$PWD/soteria-linux-develop/bin:$PATH
       - cd programs/webhook
       - soteria -analyzeAll .
