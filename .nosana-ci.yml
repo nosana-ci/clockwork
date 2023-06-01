@@ -57,7 +57,7 @@ jobs:
       - cd programs/thread
       - soteria -analyzeAll .
 
-  - name: audit-network
+  - name: audit-webhook
     resources:
       - name: target
       - name: soteria-linux-develop
